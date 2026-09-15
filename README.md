@@ -161,7 +161,7 @@ The resulting alternatives are ranked and presented to the user.
 # 🧠 4. Core Algorithms
 
 | Algorithm               | Purpose                                 | Time Complexity          | Space Complexity |
-| ----------------------- | -------------------------------------------- | --------------------------------------- | ------------------------ | ---------------- |
+| ----------------------- | --------------------------------------- | ------------------------ | ---------------- |
 | **BFS**                 | Disruption propagation and reachability | `O(V + E)`               | `O(V)`           |
 | **Dijkstra**            | Minimum-cost alternative routing        | `O((V + E) log V)`       | `O(V)`           |
 | **Binary Min-Heap**     | Priority queue for Dijkstra             | `O(log N)` per operation | `O(N)`           |
