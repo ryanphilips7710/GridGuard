@@ -22,30 +22,8 @@ An interactive energy network resilience simulator that models transmission disr
 
 ## 📸 Dashboard Preview
 
-<!-- Add your screenshot here -->
+<img width="959" height="495" alt="image" src="https://github.com/user-attachments/assets/e5708ecb-6143-45fa-b34c-ba59f0a86309" />
 
-![GridGuard Dashboard](docs/dashboard.png)
-
-> **Screenshot:** GridGuard's interactive energy network resilience dashboard.
-
----
-
-## ✨ Key Features
-
-* 🕸️ **Interactive Energy Network** — Visualize a 16-node, 31-edge directed energy transmission network.
-* ⚠️ **Disruption Simulation** — Disable power plants, substations, or other facilities and simulate their impact.
-* 🔎 **BFS Disruption Propagation** — Identify affected nodes and downstream network reachability.
-* 🧭 **Dijkstra Alternative Routing** — Find minimum-cost alternative supply paths.
-* ⚡ **Binary Min-Heap** — Efficient priority queue powering Dijkstra's algorithm.
-* 📊 **Capacity-Aware Routing** — Prevent alternative routes from exceeding transmission capacity.
-* 📉 **Shortage Analysis** — Calculate unmet energy demand in MW.
-* 💰 **Additional Cost Analysis** — Quantify the cost difference caused by rerouting.
-* ⏱️ **Delay Analysis** — Calculate additional transmission latency.
-* 🏆 **Route Ranking** — Rank feasible alternatives using transparent scoring.
-* ❤️ **Network Health Index** — Measure overall grid integrity after disruption.
-* 🎬 **Demo Scenarios** — Predefined disruption scenarios for quick demonstrations.
-* 🔄 **Network Recovery Visualization** — Visually distinguish failed, affected, and rerouted portions of the grid.
-* 🌐 **Vercel Deployment** — Serverless-ready Flask backend with an interactive web frontend.
 
 ---
 
@@ -102,58 +80,26 @@ The resulting alternatives are ranked and presented to the user.
 
 ---
 
-# 🎯 2. How GridGuard Works
+## ✨ Key Features
 
-The complete simulation follows this pipeline:
-
-```text
-                 USER DISABLES NODE
-                        │
-                        ▼
-                Node marked FAILED
-                        │
-                        ▼
-              BFS Disruption Analysis
-                        │
-                        ▼
-               Identify affected
-               network destinations
-                        │
-                        ▼
-                Shortage Calculation
-                        │
-                        ▼
-             Find available suppliers
-                        │
-                        ▼
-           Dijkstra Alternative Routing
-                        │
-                        ▼
-             Min-Heap Route Selection
-                        │
-                        ▼
-              Capacity Verification
-                        │
-                        ▼
-           Cost + Delay Calculation
-                        │
-                        ▼
-              Alternative Ranking
-                        │
-                        ▼
-              Network Health Score
-                        │
-                        ▼
-              Interactive Visualization
-```
-
-This allows the user to understand:
-
-> **What failed → What was affected → How much power was lost → What alternatives exist → Which route is best → How much recovery is possible**
+* 🕸️ **Interactive Energy Network** — Visualize a 16-node, 31-edge directed energy transmission network.
+* ⚠️ **Disruption Simulation** — Disable power plants, substations, or other facilities and simulate their impact.
+* 🔎 **BFS Disruption Propagation** — Identify affected nodes and downstream network reachability.
+* 🧭 **Dijkstra Alternative Routing** — Find minimum-cost alternative supply paths.
+* ⚡ **Binary Min-Heap** — Efficient priority queue powering Dijkstra's algorithm.
+* 📊 **Capacity-Aware Routing** — Prevent alternative routes from exceeding transmission capacity.
+* 📉 **Shortage Analysis** — Calculate unmet energy demand in MW.
+* 💰 **Additional Cost Analysis** — Quantify the cost difference caused by rerouting.
+* ⏱️ **Delay Analysis** — Calculate additional transmission latency.
+* 🏆 **Route Ranking** — Rank feasible alternatives using transparent scoring.
+* ❤️ **Network Health Index** — Measure overall grid integrity after disruption.
+* 🎬 **Demo Scenarios** — Predefined disruption scenarios for quick demonstrations.
+* 🔄 **Network Recovery Visualization** — Visually distinguish failed, affected, and rerouted portions of the grid.
+* 🌐 **Vercel Deployment** — Serverless-ready Flask backend with an interactive web frontend.
 
 ---
 
-# 🏗️ 3. System Architecture
+# 🏗️ 2. System Architecture
 
 ```text
 ┌───────────────────────────────────────────────┐
@@ -349,144 +295,6 @@ Then open:
 ```text
 http://localhost:5000
 ```
-
----
-
-# 🎮 8. Quick Demo
-
-After launching GridGuard:
-
-### Step 1 — Inspect the Network
-
-Explore the interactive topology mesh.
-
-Click any node to inspect:
-
-* Facility name
-* Facility type
-* Location
-* Generation capacity
-* Power demand
-* Current operational state
-
-### Step 2 — Select a Facility
-
-Choose a node from the **Grid Controls** panel.
-
-### Step 3 — Simulate Failure
-
-Click:
-
-```text
-Simulate Disruption
-```
-
-### Step 4 — Observe BFS Propagation
-
-GridGuard identifies the affected portion of the network.
-
-### Step 5 — Analyze Shortage
-
-The dashboard calculates:
-
-* Total demand
-* Available supply
-* Recovered supply
-* Remaining shortage
-* Network health
-
-### Step 6 — Analyze Alternatives
-
-Dijkstra searches for alternative supply routes.
-
-The alternatives are ranked according to their:
-
-* Cost
-* Delay
-* Capacity
-* Remaining shortage
-
-### Step 7 — Recover
-
-The graph visually highlights the alternative transmission paths.
-
-### Step 8 — Reset
-
-Click:
-
-```text
-Reset Network
-```
-
-to restore the baseline network.
-
----
-
-# 🔬 9. Demonstration Scenarios
-
-## Scenario 1 — Major Power Plant Failure
-
-### Target
-
-```text
-P1 — North Thermal Plant
-```
-
-### Action
-
-Disable the 150 MW North Power Plant.
-
-### Expected Behavior
-
-BFS propagates through the North transmission corridor and identifies affected downstream facilities.
-
-Alternative suppliers such as Central Hydro and South Nuclear are evaluated.
-
-Dijkstra searches for alternative routes.
-
-The system checks whether the alternative transmission corridors have sufficient capacity.
-
-For example:
-
-```text
-Metro City Demand = 80 MW
-Alternative Route Capacity = 65 MW
-
-Remaining Shortage = 15 MW
-```
-
-The dashboard displays the resulting shortage, additional cost, delay, and network health.
-
----
-
-## Scenario 2 — Central Switching Station Failure
-
-### Target
-
-```text
-S2 — Central Switching Station
-```
-
-### Action
-
-Disable the central transmission backbone.
-
-### Expected Behavior
-
-The central interconnect becomes unavailable.
-
-BFS identifies affected downstream facilities.
-
-Dijkstra evaluates alternative peripheral transmission corridors.
-
-The system calculates:
-
-* Alternative routing cost
-* Additional delay
-* Available capacity
-* Remaining shortage
-
-This demonstrates how GridGuard handles failures in a central network component rather than a power-generation facility.
 
 ---
 
