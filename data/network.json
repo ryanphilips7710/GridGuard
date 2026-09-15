@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": "P1",
+      "name": "North Thermal Plant",
+      "type": "supplier",
+      "supply": 150,
+      "demand": 0,
+      "enabled": true,
+      "location": "North Sector"
+    },
+    {
+      "id": "P2",
+      "name": "Central Hydro Plant",
+      "type": "supplier",
+      "supply": 120,
+      "demand": 0,
+      "enabled": true,
+      "location": "Central Valley"
+    },
+    {
+      "id": "P3",
+      "name": "South Nuclear Plant",
+      "type": "supplier",
+      "supply": 100,
+      "demand": 0,
+      "enabled": true,
+      "location": "South Coast"
+    },
+    {
+      "id": "S1",
+      "name": "North Grid Substation",
+      "type": "transmission",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "North Sub-region"
+    },
+    {
+      "id": "S2",
+      "name": "Central Switching Station",
+      "type": "transmission",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Metro Interconnect"
+    },
+    {
+      "id": "S3",
+      "name": "East High-Voltage Hub",
+      "type": "transmission",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Eastern Hills"
+    },
+    {
+      "id": "S4",
+      "name": "West Interconnect Substation",
+      "type": "transmission",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Western Corridor"
+    },
+    {
+      "id": "S5",
+      "name": "South Bulk Substation",
+      "type": "transmission",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Southern Plains"
+    },
+    {
+      "id": "D1",
+      "name": "Metro North Distribution",
+      "type": "distribution",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Urban North"
+    },
+    {
+      "id": "D2",
+      "name": "Industrial Sector Hub",
+      "type": "distribution",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Heavy Industry Zone"
+    },
+    {
+      "id": "D3",
+      "name": "East Suburban Hub",
+      "type": "distribution",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Residential East"
+    },
+    {
+      "id": "D4",
+      "name": "Port Logistics Utility",
+      "type": "distribution",
+      "supply": 0,
+      "demand": 0,
+      "enabled": true,
+      "location": "Harbor Terminal"
+    },
+    {
+      "id": "C1",
+      "name": "Metro City Capital",
+      "type": "destination",
+      "supply": 0,
+      "demand": 80,
+      "enabled": true,
+      "location": "Urban Core"
+    },
+    {
+      "id": "C2",
+      "name": "Industrial MegaZone",
+      "type": "destination",
+      "supply": 0,
+      "demand": 70,
+      "enabled": true,
+      "location": "Manufacturing District"
+    },
+    {
+      "id": "C3",
+      "name": "East Valley Township",
+      "type": "destination",
+      "supply": 0,
+      "demand": 45,
+      "enabled": true,
+      "location": "Eastern Suburbs"
+    },
+    {
+      "id": "C4",
+      "name": "Harbor Port & Freight",
+      "type": "destination",
+      "supply": 0,
+      "demand": 55,
+      "enabled": true,
+      "location": "Coastal Shipping Port"
+    }
+  ],
+  "edges": [
+    { "from": "P1", "to": "S1", "capacity": 110, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "P1", "to": "S4", "capacity": 70, "cost": 8, "delay": 2, "enabled": true },
+    { "from": "P2", "to": "S2", "capacity": 100, "cost": 4, "delay": 1, "enabled": true },
+    { "from": "P2", "to": "S1", "capacity": 60, "cost": 7, "delay": 2, "enabled": true },
+    { "from": "P2", "to": "S3", "capacity": 80, "cost": 6, "delay": 1, "enabled": true },
+    { "from": "P3", "to": "S5", "capacity": 90, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "P3", "to": "S2", "capacity": 50, "cost": 9, "delay": 2, "enabled": true },
+    { "from": "S1", "to": "S2", "capacity": 75, "cost": 4, "delay": 1, "enabled": true },
+    { "from": "S2", "to": "S3", "capacity": 70, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "S4", "to": "S1", "capacity": 50, "cost": 6, "delay": 2, "enabled": true },
+    { "from": "S4", "to": "S2", "capacity": 65, "cost": 7, "delay": 2, "enabled": true },
+    { "from": "S5", "to": "S2", "capacity": 60, "cost": 6, "delay": 2, "enabled": true },
+    { "from": "S5", "to": "S3", "capacity": 55, "cost": 8, "delay": 2, "enabled": true },
+    { "from": "S1", "to": "D1", "capacity": 85, "cost": 6, "delay": 1, "enabled": true },
+    { "from": "S2", "to": "D1", "capacity": 65, "cost": 8, "delay": 2, "enabled": true },
+    { "from": "S2", "to": "D2", "capacity": 90, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "S3", "to": "D2", "capacity": 75, "cost": 7, "delay": 2, "enabled": true },
+    { "from": "S3", "to": "D3", "capacity": 60, "cost": 6, "delay": 1, "enabled": true },
+    { "from": "S4", "to": "D1", "capacity": 50, "cost": 9, "delay": 2, "enabled": true },
+    { "from": "S5", "to": "D4", "capacity": 70, "cost": 6, "delay": 1, "enabled": true },
+    { "from": "S5", "to": "D2", "capacity": 45, "cost": 9, "delay": 2, "enabled": true },
+    { "from": "S2", "to": "D4", "capacity": 55, "cost": 7, "delay": 2, "enabled": true },
+    { "from": "D1", "to": "C1", "capacity": 90, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "D1", "to": "C3", "capacity": 40, "cost": 7, "delay": 2, "enabled": true },
+    { "from": "D2", "to": "C2", "capacity": 85, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "D2", "to": "C1", "capacity": 50, "cost": 9, "delay": 2, "enabled": true },
+    { "from": "D3", "to": "C3", "capacity": 60, "cost": 4, "delay": 1, "enabled": true },
+    { "from": "D3", "to": "C2", "capacity": 40, "cost": 8, "delay": 2, "enabled": true },
+    { "from": "D4", "to": "C4", "capacity": 75, "cost": 5, "delay": 1, "enabled": true },
+    { "from": "D4", "to": "C2", "capacity": 45, "cost": 10, "delay": 3, "enabled": true },
+    { "from": "D2", "to": "C4", "capacity": 40, "cost": 8, "delay": 2, "enabled": true }
+  ]
+}

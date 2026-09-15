@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GridGuard — Energy Network Resilience & Disruption Simulator</title>
+  <meta name="description" content="Interactive graph algorithm simulator modeling energy network disruption, BFS cascading failure propagation, and Dijkstra min-heap alternative routing under capacity constraints.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Cytoscape.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Global Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">
+            <span class="highlight">GRID</span>GUARD
+            <span class="version-badge">v1.0 • ALGO-POWERED</span>
+          </div>
+          <div class="brand-tagline">Energy Network Resilience Simulator • <span class="motto">Simulate • Detect • Reroute • Recover</span></div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Live System Status Badge -->
+        <div id="systemStatusBadge" class="status-badge operational">
+          <span class="status-dot"></span>
+          <span id="systemStatusText">SYSTEM OPERATIONAL</span>
+        </div>
+
+        <!-- Global Quick Reset -->
+        <button id="btnResetNetwork" class="btn btn-outline" title="Reset grid to nominal operational baseline">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Reset Network
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area: Left Controls & Inspector, Center Graph, Right Analytics -->
+    <main class="dashboard-layout">
+
+      <!-- LEFT SIDEBAR: Controls, Node Inspector & Demo Scenarios -->
+      <aside class="sidebar-panel">
+        
+        <!-- Simulation Control Card -->
+        <section class="card control-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              Grid Controls
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="nodeSelect">Select Facility to Target:</label>
+              <select id="nodeSelect" class="form-select">
+                <option value="">-- Choose Node to Disable --</option>
+              </select>
+            </div>
+            <div class="button-group">
+              <button id="btnSimulate" class="btn btn-danger" disabled>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Simulate Disruption
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Node Inspector Details Card -->
+        <section class="card inspector-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Facility Inspector
+            </h3>
+            <span id="inspectorStatusPill" class="pill pill-operational">Operational</span>
+          </div>
+          <div class="card-body">
+            <div id="inspectorEmptyState" class="empty-state">
+              <p>Click any node on the graph canvas or select from the dropdown above to inspect details.</p>
+            </div>
+            <div id="inspectorDetails" class="inspector-content hidden">
+              <div class="inspector-title-row">
+                <div id="inspectorName" class="inspector-name">North Thermal Plant</div>
+                <div id="inspectorId" class="inspector-id">P1</div>
+              </div>
+              <div class="inspector-grid">
+                <div class="inspector-item">
+                  <span class="label">Type</span>
+                  <span id="inspectorType" class="value type-supplier">Supplier</span>
+                </div>
+                <div class="inspector-item">
+                  <span class="label">Location</span>
+                  <span id="inspectorLocation" class="value">North Sector</span>
+                </div>
+                <div class="inspector-item" id="inspectorSupplyRow">
+                  <span class="label">Generation Capacity</span>
+                  <span id="inspectorSupply" class="value highlight-val">150 MW</span>
+                </div>
+                <div class="inspector-item" id="inspectorDemandRow">
+                  <span class="label">Power Demand</span>
+                  <span id="inspectorDemand" class="value highlight-val">80 MW</span>
+                </div>
+              </div>
+              <div class="inspector-actions">
+                <button id="btnInspectorAction" class="btn btn-sm btn-danger-subtle">
+                  Disable This Node
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Predefined Scenarios Card -->
+        <section class="card scenarios-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Demo Scenarios
+            </h3>
+          </div>
+          <div class="card-body scenarios-list" id="scenariosContainer">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </section>
+
+      </aside>
+
+      <!-- CENTER: Interactive Cytoscape Graph Canvas -->
+      <section class="graph-canvas-container">
+        
+        <!-- Canvas Top Toolbar -->
+        <div class="canvas-toolbar">
+          <div class="toolbar-left">
+            <div class="view-title">
+              <span>TOPOLOGY MESH</span>
+              <span class="node-count-badge" id="graphNodeCountBadge">16 Nodes • 31 Directed Transmission Lines</span>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <!-- Layout Switcher -->
+            <div class="layout-controls">
+              <button class="tool-btn active" data-layout="breadthfirst" title="Flow Hierarchy Layout">Flow View</button>
+              <button class="tool-btn" data-layout="cose" title="Force-Directed Physics Layout">Physics</button>
+              <button class="tool-btn" data-layout="concentric" title="Concentric Ring Layout">Concentric</button>
+            </div>
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+              <button id="btnZoomIn" class="tool-btn" title="Zoom In">+</button>
+              <button id="btnZoomOut" class="tool-btn" title="Zoom Out">-</button>
+              <button id="btnFitGraph" class="tool-btn" title="Fit to Viewport">Fit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cytoscape Container -->
+        <div id="cy" class="cy-viewport"></div>
+
+        <!-- Graph Legend Overlay -->
+        <div class="graph-legend">
+          <div class="legend-header">Grid Legend</div>
+          <div class="legend-items">
+            <div class="legend-item"><span class="legend-icon node-supplier"></span> Supplier (Power Plant)</div>
+            <div class="legend-item"><span class="legend-icon node-transmission"></span> Substation / Switching</div>
+            <div class="legend-item"><span class="legend-icon node-distribution"></span> Distribution Hub</div>
+            <div class="legend-item"><span class="legend-icon node-destination"></span> Destination / Consumer</div>
+            <div class="legend-divider"></div>
+            <div class="legend-item"><span class="legend-icon state-failed"></span> Failed (Target)</div>
+            <div class="legend-item"><span class="legend-icon state-affected"></span> Affected / Disrupted</div>
+            <div class="legend-item"><span class="legend-icon state-rerouted"></span> Active Reroute Path</div>
+          </div>
+        </div>
+
+        <!-- Disruption Step Pipeline Breadcrumb (Explains WHAT FAILED -> WHAT WAS AFFECTED -> REROUTED) -->
+        <div id="pipelineExplanation" class="pipeline-bar hidden">
+          <div class="pipeline-step step-failed">
+            <span class="step-num">1</span>
+            <span class="step-label">Node Failed</span>
+            <strong id="pipelineFailedNode">P1</strong>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step step-bfs">
+            <span class="step-num">2</span>
+            <span class="step-label">BFS Propagation</span>
+            <strong id="pipelineBfsCount">4 Affected Nodes</strong>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step step-shortage">
+            <span class="step-num">3</span>
+            <span class="step-label">Shortage Detected</span>
+            <strong id="pipelineShortageMW">0 MW</strong>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step step-dijkstra">
+            <span class="step-num">4</span>
+            <span class="step-label">Dijkstra Rerouting</span>
+            <strong id="pipelineDijkstraRuns">Candidate Paths</strong>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step step-recovery">
+            <span class="step-num">5</span>
+            <span class="step-label">Capacity Recovery</span>
+            <strong id="pipelineHealthScore">100% Health</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT SIDEBAR: Impact Analysis, Health Score, Alternative Routes & Algorithm Panel -->
+      <aside class="analytics-panel">
+        
+        <!-- Network Health Score Card -->
+        <section class="card health-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              Network Health Index
+            </h3>
+          </div>
+          <div class="card-body health-body">
+            <div class="health-display">
+              <div class="health-ring-container">
+                <svg class="health-ring" width="110" height="110" viewBox="0 0 120 120">
+                  <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                  <circle id="healthRingBar" class="ring-progress" cx="60" cy="60" r="50" stroke-dasharray="314.15" stroke-dashoffset="0"></circle>
+                </svg>
+                <div class="health-value-box">
+                  <span id="healthPercent" class="health-value">100%</span>
+                  <span class="health-sub">GRID INTEGRITY</span>
+                </div>
+              </div>
+              <div class="health-details">
+                <div class="health-status-text" id="healthStatusNarrative">Nominal Baseline: All transmission circuits fully functional.</div>
+                <div class="progress-bar-container">
+                  <div id="healthBar" class="health-bar-fill" style="width: 100%;"></div>
+                </div>
+                <div class="health-stats-mini">
+                  <span>Demand: <strong id="healthTotalDemand">250 MW</strong></span>
+                  <span>Delivered: <strong id="healthTotalDelivered">250 MW</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Impact Metrics Grid Card -->
+        <section class="card impact-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+              Impact Analysis
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="metrics-grid">
+              <div class="metric-box">
+                <span class="metric-label">Affected Nodes</span>
+                <span id="metricAffectedNodes" class="metric-val">0</span>
+                <span class="metric-sub">via BFS traversal</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Affected Destinations</span>
+                <span id="metricAffectedDest" class="metric-val">0</span>
+                <span class="metric-sub">Consumers impacted</span>
+              </div>
+              <div class="metric-box warning-box">
+                <span class="metric-label">Total Shortage</span>
+                <span id="metricTotalShortage" class="metric-val">0 <small>MW</small></span>
+                <span class="metric-sub">Unmet power deficit</span>
+              </div>
+              <div class="metric-box success-box">
+                <span class="metric-label">Recovered Supply</span>
+                <span id="metricRecoveredSupply" class="metric-val">250 <small>MW</small></span>
+                <span class="metric-sub">Alternative transmission</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Additional Cost</span>
+                <span id="metricAdditionalCost" class="metric-val">₹0</span>
+                <span class="metric-sub">Rerouting transmission delta</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Additional Delay</span>
+                <span id="metricAdditionalDelay" class="metric-val">+0.0 <small>hrs</small></span>
+                <span class="metric-sub">Latency penalty</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Alternative Routes & Ranking Panel -->
+        <section class="card reroute-card">
+          <div class="card-header">
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Alternative Routes & Ranking
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="reroutesEmptyState" class="empty-state">
+              <p>No disruption active. All destinations are receiving nominal baseline power.</p>
+            </div>
+            <div id="reroutesContainer" class="reroutes-list hidden">
+              <!-- Populated dynamically with ranked alternative route cards -->
+            </div>
+          </div>
+        </section>
+
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- App Scripts -->
+  <script src="graph.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
