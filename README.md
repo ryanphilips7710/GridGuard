@@ -1,7 +1,8 @@
-# GridGuard — Energy Network Resilience & Disruption Simulator
+# ⚡ GridGuard — Energy Network Resilience & Disruption Simulator
 
-> **Simulate • Detect • Reroute • Recover**  
-> An interactive algorithmic resilience simulator modeling energy transmission disruptions, cascading failure propagation via BFS, and minimum-cost capacity-constrained alternative rerouting using Dijkstra with a Binary Min-Heap (`heapq`).
+> **Simulate • Detect • Reroute • Recover**
+
+An interactive energy network resilience simulator that models transmission disruptions, cascading failures, energy shortages, and intelligent alternative routing using **BFS, Dijkstra's Algorithm, and a Binary Min-Heap**.
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0%2B-green.svg)](https://flask.palletsprojects.com/)
@@ -11,128 +12,324 @@
 
 ---
 
-## ⚡ 1. Problem & Solution Overview
+## 🚀 Live Demo
 
-### The Problem
-Modern power grids are complex, interconnected graph networks. When a high-voltage substation, switching hub, or power plant fails (due to equipment malfunction, extreme weather, or physical damage), disruptions cascade downstream. Grid operators must rapidly:
-1. Identify all downstream substations and cities that lose direct supply.
+**[Launch GridGuard →](https://gridguard-livid.vercel.app/)**
+
+> Interactive deployment of the GridGuard energy resilience simulator.
+
+---
+
+## 📸 Dashboard Preview
+
+<!-- Add your screenshot here -->
+
+![GridGuard Dashboard](docs/dashboard.png)
+
+> **Screenshot:** GridGuard's interactive energy network resilience dashboard.
+
+---
+
+## ✨ Key Features
+
+* 🕸️ **Interactive Energy Network** — Visualize a 16-node, 31-edge directed energy transmission network.
+* ⚠️ **Disruption Simulation** — Disable power plants, substations, or other facilities and simulate their impact.
+* 🔎 **BFS Disruption Propagation** — Identify affected nodes and downstream network reachability.
+* 🧭 **Dijkstra Alternative Routing** — Find minimum-cost alternative supply paths.
+* ⚡ **Binary Min-Heap** — Efficient priority queue powering Dijkstra's algorithm.
+* 📊 **Capacity-Aware Routing** — Prevent alternative routes from exceeding transmission capacity.
+* 📉 **Shortage Analysis** — Calculate unmet energy demand in MW.
+* 💰 **Additional Cost Analysis** — Quantify the cost difference caused by rerouting.
+* ⏱️ **Delay Analysis** — Calculate additional transmission latency.
+* 🏆 **Route Ranking** — Rank feasible alternatives using transparent scoring.
+* ❤️ **Network Health Index** — Measure overall grid integrity after disruption.
+* 🎬 **Demo Scenarios** — Predefined disruption scenarios for quick demonstrations.
+* 🔄 **Network Recovery Visualization** — Visually distinguish failed, affected, and rerouted portions of the grid.
+* 🌐 **Vercel Deployment** — Serverless-ready Flask backend with an interactive web frontend.
+
+---
+
+# ⚡ 1. Problem & Solution
+
+## The Problem
+
+Modern energy grids are complex, interconnected graph networks. When a power plant, high-voltage substation, switching hub, or transmission facility fails due to equipment malfunction, extreme weather, or physical damage, the disruption can propagate through connected infrastructure.
+
+Grid operators need to rapidly:
+
+1. Identify affected downstream facilities and destinations.
 2. Calculate the resulting energy shortage in Megawatts (MW).
-3. Discover viable alternative supply routes from active power plants.
-4. Enforce transmission line capacity constraints (preventing secondary line overloads).
-5. Quantify financial costs ($\Delta \text{Cost}$) and transmission latency ($\Delta \text{Delay}$) to rank optimal recovery routes.
+3. Discover viable alternative supply routes.
+4. Ensure alternative transmission lines do not exceed their capacity.
+5. Quantify additional routing cost.
+6. Quantify additional transmission delay.
+7. Rank the available recovery options.
 
-### The Solution: GridGuard
-**GridGuard** is an interactive, full-stack energy resilience dashboard powered by authentic computer science graph algorithms:
-- **BFS (Breadth-First Search)** traverses the directed grid to trace the exact blast radius and reachability loss from failed nodes.
-- **Dijkstra's Algorithm with a custom Min-Heap Priority Queue (`heapq`)** discovers the lowest-cost alternative supply routes.
-- **Bottleneck Capacity Analysis** ensures rerouted lines do not exceed physical megawatt thresholds:
-  $$\text{Path Capacity} = \min_{e \in \text{Path}} (\text{Capacity}(e))$$
-- **Multi-Factor Route Ranking Engine** scores and ranks candidate paths with transparent explanations.
-- **Interactive Cytoscape.js Mesh** visualizes failure states, affected corridors, and animated recovery paths in real-time.
+## The Solution
+
+**GridGuard** models the energy infrastructure as a directed weighted graph and uses classical graph algorithms to simulate network disruptions and recovery.
+
+### BFS — Disruption Propagation
+
+**Breadth-First Search** traverses the network from a failed facility to determine affected downstream nodes and reachability loss.
+
+### Dijkstra + Min-Heap — Alternative Routing
+
+**Dijkstra's Algorithm**, powered by a binary Min-Heap using Python's `heapq`, identifies low-cost alternative supply routes from active suppliers to affected destinations.
+
+### Capacity Analysis
+
+Every transmission line has a maximum capacity.
+
+For a candidate route:
+
+```text
+Path Capacity = minimum edge capacity along the route
+```
+
+This ensures that an alternative route cannot supply more energy than its bottleneck transmission line can physically carry.
+
+### Route Ranking
+
+Candidate routes are evaluated using factors such as:
+
+* Additional cost
+* Additional delay
+* Available capacity
+* Remaining shortage
+
+The resulting alternatives are ranked and presented to the user.
 
 ---
 
-## 🏗️ 2. System Architecture & Algorithms
+# 🎯 2. How GridGuard Works
 
+The complete simulation follows this pipeline:
+
+```text
+                 USER DISABLES NODE
+                        │
+                        ▼
+                Node marked FAILED
+                        │
+                        ▼
+              BFS Disruption Analysis
+                        │
+                        ▼
+               Identify affected
+               network destinations
+                        │
+                        ▼
+                Shortage Calculation
+                        │
+                        ▼
+             Find available suppliers
+                        │
+                        ▼
+           Dijkstra Alternative Routing
+                        │
+                        ▼
+             Min-Heap Route Selection
+                        │
+                        ▼
+              Capacity Verification
+                        │
+                        ▼
+           Cost + Delay Calculation
+                        │
+                        ▼
+              Alternative Ranking
+                        │
+                        ▼
+              Network Health Score
+                        │
+                        ▼
+              Interactive Visualization
 ```
-[ USER INTERFACE / DASHBOARD ]
-  │
-  ├── Cytoscape.js Topology Mesh (16 Nodes • 31 Directed Edges)
-  ├── Live Health Index Ring & Impact Dashboard
-  └── Ranked Alternative Route Visualizer
-        │
-        ▼  (REST API: /api/simulate)
-[ FLASK ORCHESTRATION PIPELINE (backend/simulation.py) ]
-  │
-  ├── 1. BFS Disruption Engine (backend/bfs.py)
-  │      └── Queue-based cascading reachability analysis
-  │
-  ├── 2. Shortage Engine (backend/shortage.py)
-  │      └── Evaluates demand vs pre-failure / post-failure supply
-  │
-  ├── 3. Dijkstra Rerouting Engine (backend/dijkstra.py)
-  │      └── Min-Heap Priority Queue (backend/heap.py + heapq)
-  │
-  ├── 4. Capacity & Bottleneck Engine
-  │      └── Enforces transmission line MW throughput limits
-  │
-  └── 5. Multi-Criteria Route Ranking (backend/ranking.py)
-         └── Computes cost deltas, latency penalties, and shortage deficits
+
+This allows the user to understand:
+
+> **What failed → What was affected → How much power was lost → What alternatives exist → Which route is best → How much recovery is possible**
+
+---
+
+# 🏗️ 3. System Architecture
+
+```text
+┌───────────────────────────────────────────────┐
+│                GRIDGUARD UI                   │
+│                                               │
+│ HTML + CSS + JavaScript + Cytoscape.js        │
+│                                               │
+│ • Interactive Topology Mesh                   │
+│ • Node Inspector                              │
+│ • Network Health Index                        │
+│ • Impact Dashboard                            │
+│ • Alternative Route Ranking                   │
+└───────────────────────┬───────────────────────┘
+                        │
+                        │ REST API
+                        ▼
+┌───────────────────────────────────────────────┐
+│              FLASK API LAYER                  │
+│                                               │
+│ /api/network                                  │
+│ /api/simulate                                 │
+│ /api/reset                                    │
+│ /api/scenarios                                │
+└───────────────────────┬───────────────────────┘
+                        │
+                        ▼
+┌───────────────────────────────────────────────┐
+│           SIMULATION ENGINE                   │
+│                                               │
+│ ┌───────────────────────────────────────────┐ │
+│ │ BFS Disruption Engine                     │ │
+│ │ → Cascading reachability analysis         │ │
+│ └───────────────────────────────────────────┘ │
+│                                               │
+│ ┌───────────────────────────────────────────┐ │
+│ │ Shortage Engine                           │ │
+│ │ → Demand vs available supply              │ │
+│ └───────────────────────────────────────────┘ │
+│                                               │
+│ ┌───────────────────────────────────────────┐ │
+│ │ Dijkstra Routing Engine                   │ │
+│ │ → Minimum-cost alternative paths          │ │
+│ └───────────────────────────────────────────┘ │
+│                                               │
+│ ┌───────────────────────────────────────────┐ │
+│ │ Capacity Analysis                         │ │
+│ │ → Bottleneck transmission constraints     │ │
+│ └───────────────────────────────────────────┘ │
+│                                               │
+│ ┌───────────────────────────────────────────┐ │
+│ │ Route Ranking Engine                      │ │
+│ │ → Cost + delay + shortage evaluation      │ │
+│ └───────────────────────────────────────────┘ │
+└───────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📊 3. Core Algorithms & Time Complexity
+# 🧠 4. Core Algorithms
 
-| Algorithm | Implementation File | Role in GridGuard | Time Complexity | Space Complexity |
-| :--- | :--- | :--- | :--- | :--- |
-| **Breadth-First Search (BFS)** | [`backend/bfs.py`](file:///c:/Users/HOME/Downloads/GridGuard/backend/bfs.py) | Traces disruption propagation downstream from disabled facility | $\mathcal{O}(V + E)$ | $\mathcal{O}(V)$ |
-| **Dijkstra Shortest Path** | [`backend/dijkstra.py`](file:///c:/Users/HOME/Downloads/GridGuard/backend/dijkstra.py) | Finds lowest-cost alternative transmission routes | $\mathcal{O}((V + E) \log V)$ | $\mathcal{O}(V)$ |
-| **Binary Min-Heap** | [`backend/heap.py`](file:///c:/Users/HOME/Downloads/GridGuard/backend/heap.py) | Priority queue powering Dijkstra with `heapq` | $\mathcal{O}(\log N)$ per op | $\mathcal{O}(N)$ |
-| **Bottleneck Capacity** | [`backend/shortage.py`](file:///c:/Users/HOME/Downloads/GridGuard/backend/shortage.py) | Computes min edge capacity along path | $\mathcal{O}(L)$ where $L = \text{hops}$ | $\mathcal{O}(1)$ |
-| **Multi-Criteria Ranking** | [`backend/ranking.py`](file:///c:/Users/HOME/Downloads/GridGuard/backend/ranking.py) | Evaluates composite penalty score: $\Delta \text{Cost} + \Delta \text{Delay} + \text{Shortage}$ | $\mathcal{O}(K \log K)$ | $\mathcal{O}(K)$ |
+| Algorithm               | Implementation                               | Purpose                                 | Time Complexity          | Space Complexity |
+| ----------------------- | -------------------------------------------- | --------------------------------------- | ------------------------ | ---------------- |
+| **BFS**                 | [`backend/bfs.py`](backend/bfs.py)           | Disruption propagation and reachability | `O(V + E)`               | `O(V)`           |
+| **Dijkstra**            | [`backend/dijkstra.py`](backend/dijkstra.py) | Minimum-cost alternative routing        | `O((V + E) log V)`       | `O(V)`           |
+| **Binary Min-Heap**     | [`backend/heap.py`](backend/heap.py)         | Priority queue for Dijkstra             | `O(log N)` per operation | `O(N)`           |
+| **Bottleneck Capacity** | [`backend/shortage.py`](backend/shortage.py) | Determines route capacity               | `O(L)`                   | `O(1)`           |
+| **Route Ranking**       | [`backend/ranking.py`](backend/ranking.py)   | Ranks candidate recovery routes         | `O(K log K)`             | `O(K)`           |
 
 Where:
-- $V = \text{Total Nodes (16 facilities: 3 Power Plants, 5 Substations, 4 Distribution Hubs, 4 Cities)}$
-- $E = \text{Total Transmission Lines (31 directed edges)}$
-- $K = \text{Candidate alternative routes evaluated per destination}$
+
+* `V` = number of nodes
+* `E` = number of directed transmission edges
+* `L` = number of hops in a route
+* `K` = number of candidate routes
+
+### Network Size
+
+The default GridGuard network contains:
+
+```text
+16 Nodes
+31 Directed Transmission Lines
+
+3 Power Plants
+5 Substations
+4 Distribution Hubs
+4 Destinations
+```
 
 ---
 
-## 📁 4. Project Structure
+# 🛠️ 5. Technology Stack
+
+| Layer               | Technology              |
+| ------------------- | ----------------------- |
+| Frontend            | HTML5, CSS3, JavaScript |
+| Graph Visualization | Cytoscape.js            |
+| Backend             | Python                  |
+| Web Framework       | Flask                   |
+| Graph Algorithms    | BFS, Dijkstra           |
+| Priority Queue      | Python `heapq`          |
+| Data Storage        | JSON                    |
+| API                 | REST                    |
+| Deployment          | Vercel                  |
+| Version Control     | Git / GitHub            |
+
+---
+
+# 📁 6. Project Structure
 
 ```text
 GridGuard/
 │
 ├── api/
-│   └── index.py               # Flask REST server & Vercel WSGI entrypoint
+│   └── index.py               # Flask REST server & Vercel entrypoint
 │
 ├── backend/
-│   ├── __init__.py            # Backend package exports
-│   ├── network.py             # Graph data structures (Node, Edge, EnergyNetwork)
-│   ├── bfs.py                 # Queue-based BFS disruption propagation algorithm
-│   ├── heap.py                # Min-Heap Priority Queue wrapper around Python heapq
-│   ├── dijkstra.py            # Manual Dijkstra algorithm with bottleneck checking
-│   ├── shortage.py            # Shortage calculations & Grid Health Index formula
-│   ├── ranking.py             # Multi-factor alternative route ranking engine
-│   └── simulation.py          # Master simulation pipeline orchestrator
+│   ├── __init__.py            # Backend package
+│   ├── network.py             # Graph data structures
+│   ├── bfs.py                 # BFS disruption propagation
+│   ├── heap.py                # Min-Heap wrapper using heapq
+│   ├── dijkstra.py            # Dijkstra routing algorithm
+│   ├── shortage.py            # Shortage & health calculations
+│   ├── ranking.py             # Alternative route ranking
+│   └── simulation.py          # Master simulation pipeline
 │
 ├── data/
-│   └── network.json           # 16-node energy mesh with capacities, costs, latencies
+│   └── network.json           # 16-node energy network
 │
 ├── frontend/
-│   ├── index.html             # Modern command center dashboard layout
-│   ├── style.css              # Cyber-grid dark theme with neon accents & glassmorphism
-│   ├── graph.js               # Cytoscape.js interactive topology manager & animations
-│   └── app.js                 # Frontend application controller & REST API client
+│   ├── index.html             # Dashboard UI
+│   ├── style.css              # Dashboard styling
+│   ├── graph.js               # Cytoscape.js graph manager
+│   └── app.js                 # Frontend controller & API client
 │
-├── test_simulation.py         # Complete automated test suite (13 unit/integration tests)
-├── requirements.txt           # Python dependencies (Flask, Flask-CORS)
-├── vercel.json                # Vercel serverless deployment config
-└── README.md                  # Comprehensive project documentation
+├── docs/
+│   └── dashboard.png          # Project screenshot
+│
+├── test_simulation.py         # Automated test suite
+├── requirements.txt           # Python dependencies
+├── vercel.json                # Vercel deployment configuration
+└── README.md                  # Project documentation
 ```
 
 ---
 
-## 🚀 5. Getting Started (Local Setup)
+# 🚀 7. Getting Started
 
-### Prerequisites
-- Python 3.10+ installed
-- Modern Web Browser (Chrome, Firefox, Edge, Safari)
+## Prerequisites
 
-### 1. Clone & Install Dependencies
+* Python 3.10+
+* Git
+* Modern web browser
+* Internet connection for Cytoscape.js CDN
+
+## Clone the Repository
+
 ```bash
-git clone https://github.com/your-username/GridGuard.git
+git clone https://github.com/ryanphilips7710/GridGuard.git
 cd GridGuard
+```
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Run Automated Test Suite
-Verify that all 13 algorithm and integration tests pass:
+## Run Tests
+
 ```bash
 python test_simulation.py
 ```
+
 Expected output:
+
 ```text
 .............
 ----------------------------------------------------------------------
@@ -141,147 +338,487 @@ Ran 13 tests in 0.083s
 OK
 ```
 
-### 3. Launch the Local Development Server
+## Start the Development Server
+
 ```bash
 python api/index.py
 ```
-Open your browser and navigate to:
-```
+
+Then open:
+
+```text
 http://localhost:5000
 ```
 
 ---
 
-## 🌐 6. Deployment on Vercel
+# 🎮 8. Quick Demo
 
-GridGuard is structured for instant one-click deployment on **Vercel Serverless Functions**:
+After launching GridGuard:
 
-1. Install the Vercel CLI or link via GitHub:
-   ```bash
-   npm i -g vercel
-   vercel
-   ```
-2. The included [`vercel.json`](file:///c:/Users/HOME/Downloads/GridGuard/vercel.json) automatically directs incoming requests to [`api/index.py`](file:///c:/Users/HOME/Downloads/GridGuard/api/index.py) using the `@vercel/python` builder.
-3. Static files are served directly from the [`frontend/`](file:///c:/Users/HOME/Downloads/GridGuard/frontend) directory.
+### Step 1 — Inspect the Network
+
+Explore the interactive topology mesh.
+
+Click any node to inspect:
+
+* Facility name
+* Facility type
+* Location
+* Generation capacity
+* Power demand
+* Current operational state
+
+### Step 2 — Select a Facility
+
+Choose a node from the **Grid Controls** panel.
+
+### Step 3 — Simulate Failure
+
+Click:
+
+```text
+Simulate Disruption
+```
+
+### Step 4 — Observe BFS Propagation
+
+GridGuard identifies the affected portion of the network.
+
+### Step 5 — Analyze Shortage
+
+The dashboard calculates:
+
+* Total demand
+* Available supply
+* Recovered supply
+* Remaining shortage
+* Network health
+
+### Step 6 — Analyze Alternatives
+
+Dijkstra searches for alternative supply routes.
+
+The alternatives are ranked according to their:
+
+* Cost
+* Delay
+* Capacity
+* Remaining shortage
+
+### Step 7 — Recover
+
+The graph visually highlights the alternative transmission paths.
+
+### Step 8 — Reset
+
+Click:
+
+```text
+Reset Network
+```
+
+to restore the baseline network.
 
 ---
 
-## 📡 7. REST API Reference
+# 🔬 9. Demonstration Scenarios
 
-### `GET /api/network`
-Returns the complete baseline grid topology.
-- **Response:**
-  ```json
-  {
-    "success": true,
-    "data": {
-      "nodes": [{ "id": "P1", "name": "North Thermal Plant", "type": "supplier", "supply": 150, "demand": 0, "enabled": true }],
-      "edges": [{ "from": "P1", "to": "S1", "capacity": 110, "cost": 5, "delay": 1, "enabled": true }]
-    }
-  }
-  ```
+## Scenario 1 — Major Power Plant Failure
+
+### Target
+
+```text
+P1 — North Thermal Plant
+```
+
+### Action
+
+Disable the 150 MW North Power Plant.
+
+### Expected Behavior
+
+BFS propagates through the North transmission corridor and identifies affected downstream facilities.
+
+Alternative suppliers such as Central Hydro and South Nuclear are evaluated.
+
+Dijkstra searches for alternative routes.
+
+The system checks whether the alternative transmission corridors have sufficient capacity.
+
+For example:
+
+```text
+Metro City Demand = 80 MW
+Alternative Route Capacity = 65 MW
+
+Remaining Shortage = 15 MW
+```
+
+The dashboard displays the resulting shortage, additional cost, delay, and network health.
 
 ---
 
-### `POST /api/simulate`
-Executes disruption simulation on a target disabled facility.
-- **Request Body:**
-  ```json
-  {
-    "disabled_node": "P1"
-  }
-  ```
-- **Response Body:**
-  ```json
-  {
-    "success": true,
-    "simulation": {
-      "disabled_node": { "id": "P1", "name": "North Thermal Plant", "type": "supplier", "capacity": 150 },
-      "network_health": 94,
-      "total_demand": 250.0,
-      "total_available_supply": 235.0,
-      "total_shortage": 15.0,
-      "total_additional_cost": 23.0,
-      "total_additional_delay": 2.0,
-      "affected_nodes_count": 12,
-      "affected_nodes": ["S1", "S4", "S2", "D1", "S3", "D2", "D4", "C1", "C3", "D3", "C2", "C4"],
-      "affected_destinations_count": 4,
-      "destination_impacts": [
-        {
-          "destination": "C1",
-          "name": "Metro City Capital",
-          "demand": 80.0,
-          "original_supply": 80.0,
-          "recovered_supply": 65.0,
-          "remaining_shortage": 15.0,
-          "coverage": 81.2
-        }
-      ],
-      "alternatives_by_destination": {
-        "C1": [
-          {
-            "rank": 1,
-            "is_best": true,
-            "path": ["P2", "S2", "D1", "C1"],
-            "path_str": "P2 → S2 → D1 → C1",
-            "total_cost": 21.0,
-            "total_delay": 4.0,
-            "bottleneck_capacity": 65.0,
-            "additional_cost": 5.0,
-            "additional_delay": 1.0,
-            "recovered_supply": 65.0,
-            "remaining_shortage": 15.0,
-            "coverage": 81.2,
-            "score": 11.9,
-            "rank_explanation": "15.0 MW deficit due to 65.0 MW bottleneck; +₹5.0 cost delta; +1.0h delay"
-          }
-        ]
-      },
-      "algorithm_summary": {
-        "bfs_nodes_traversed": 27,
-        "dijkstra_runs": 8,
-        "routes_evaluated": 16,
-        "feasible_alternatives": 12,
-        "min_heap_operations": 64
+## Scenario 2 — Central Switching Station Failure
+
+### Target
+
+```text
+S2 — Central Switching Station
+```
+
+### Action
+
+Disable the central transmission backbone.
+
+### Expected Behavior
+
+The central interconnect becomes unavailable.
+
+BFS identifies affected downstream facilities.
+
+Dijkstra evaluates alternative peripheral transmission corridors.
+
+The system calculates:
+
+* Alternative routing cost
+* Additional delay
+* Available capacity
+* Remaining shortage
+
+This demonstrates how GridGuard handles failures in a central network component rather than a power-generation facility.
+
+---
+
+# 📡 10. REST API
+
+## `GET /api/network`
+
+Returns the complete baseline network topology.
+
+Example:
+
+```json
+{
+  "success": true,
+  "data": {
+    "nodes": [
+      {
+        "id": "P1",
+        "name": "North Thermal Plant",
+        "type": "supplier",
+        "supply": 150,
+        "demand": 0,
+        "enabled": true
       }
-    }
+    ],
+    "edges": [
+      {
+        "from": "P1",
+        "to": "S1",
+        "capacity": 110,
+        "cost": 5,
+        "delay": 1,
+        "enabled": true
+      }
+    ]
   }
-  ```
+}
+```
 
 ---
 
-### `POST /api/reset`
-Restores all facilities and transmission lines back to operational baseline.
+## `POST /api/simulate`
+
+Executes a disruption simulation.
+
+### Request
+
+```json
+{
+  "disabled_node": "P1"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "simulation": {
+    "disabled_node": "P1",
+    "network_health": 94,
+    "total_demand": 250.0,
+    "total_available_supply": 235.0,
+    "total_shortage": 15.0,
+    "total_additional_cost": 23.0,
+    "total_additional_delay": 2.0,
+    "affected_nodes_count": 12,
+    "affected_destinations_count": 4
+  }
+}
+```
+
+The simulation response also includes destination-level impact, alternative routes, route rankings, and algorithm execution statistics.
 
 ---
 
-### `GET /api/scenarios`
-Returns predefined hackathon demonstration scenarios.
+## `POST /api/reset`
+
+Restores the network to its nominal operational state.
 
 ---
 
-## 🔬 8. Interactive Demo Scenarios
+## `GET /api/scenarios`
 
-### Scenario 1: Major Power Plant Failure (P1 — North Thermal Plant)
-- **Action:** Disables the 150 MW North Power Plant.
-- **Cascade:** BFS propagates through North Substation (S1), West Substation (S4), and Metro Distribution (D1).
-- **Reroute:** Central Hydro Plant (P2) and South Nuclear Plant (P3) reroute power through Central Switching Station (S2) to Metro City (C1).
-- **Bottleneck Analysis:** Rerouted line S2 $\rightarrow$ D1 has a 65 MW limit against an 80 MW demand, leaving a 15 MW shortage clearly surfaced by the algorithm.
-
-### Scenario 2: Backbone Switching Station Failure (S2 — Central Switching)
-- **Action:** Disables the core central interconnect.
-- **Cascade:** Isolates primary east-west transmission links.
-- **Reroute:** Energy is diverted through peripheral circuits (S5 South Bulk and S3 East Hub), incurring quantifiable additional transmission delay (+2.0h) and cost (+₹45).
+Returns predefined demonstration scenarios.
 
 ---
 
-## 🛡️ 9. Code Quality & Standards
+# 📊 11. Example Simulation Output
 
-- **Zero Blackbox Optimization Libraries:** BFS, Dijkstra, Min-Heap, Shortage, and Ranking engines are written in pure Python using `collections.deque` and `heapq`.
-- **Clean Separation of Concerns:** Algorithm logic is isolated in `backend/`, API routing in `api/index.py`, and UI controls in `frontend/`.
-- **Dynamic Calculation:** Every metric, node count, Dijkstra run, and route cost is calculated dynamically on-the-fly.
+A disruption can produce an analysis such as:
+
+```text
+NETWORK HEALTH
+94%
+
+TOTAL DEMAND
+250 MW
+
+AVAILABLE SUPPLY
+235 MW
+
+TOTAL SHORTAGE
+15 MW
+
+ADDITIONAL COST
+₹23
+
+ADDITIONAL DELAY
++2.0 hrs
+
+AFFECTED NODES
+12
+
+AFFECTED DESTINATIONS
+4
+```
+
+For an affected destination:
+
+```text
+Destination: Metro City
+
+Demand:
+80 MW
+
+Recovered Supply:
+65 MW
+
+Remaining Shortage:
+15 MW
+
+Coverage:
+81.2%
+
+Best Alternative:
+P2 → S2 → D1 → C1
+
+Route Capacity:
+65 MW
+
+Additional Cost:
+₹5
+
+Additional Delay:
++1 hour
+```
 
 ---
 
-## 📜 License
-MIT License. Created for College & Hackathon Demonstrations.
+# 🧪 12. Testing
+
+GridGuard includes an automated test suite covering algorithmic and integration behavior.
+
+Tests include:
+
+* BFS disruption propagation
+* Network reachability
+* Dijkstra minimum-cost routing
+* Path reconstruction
+* Min-Heap operations
+* Capacity constraints
+* Shortage calculation
+* Alternative supplier selection
+* Route ranking
+* Simulation behavior
+* Reset functionality
+* API behavior
+* Edge cases
+
+Run:
+
+```bash
+python test_simulation.py
+```
+
+---
+
+# 🌐 13. Deployment
+
+GridGuard is structured for deployment on **Vercel**.
+
+The Flask application is exposed through:
+
+```text
+api/index.py
+```
+
+and the Vercel configuration is defined in:
+
+```text
+vercel.json
+```
+
+## Deploy Using GitHub
+
+1. Push the repository to GitHub.
+2. Open Vercel.
+3. Import the GridGuard repository.
+4. Select the project root as the root directory.
+5. Deploy.
+
+## Deploy Using Vercel CLI
+
+```bash
+npm install -g vercel
+```
+
+Then:
+
+```bash
+vercel
+```
+
+The Vercel configuration routes requests through the Flask application.
+
+### Production URL
+
+**https://gridguard-livid.vercel.app/**
+
+---
+
+# 🛡️ 14. Design & Code Quality
+
+### No Black-Box Graph Algorithms
+
+The core graph algorithms are implemented explicitly in Python.
+
+GridGuard does not rely on NetworkX or another graph library to perform BFS or Dijkstra.
+
+The implementation uses:
+
+```python
+from collections import deque
+```
+
+for BFS and:
+
+```python
+import heapq
+```
+
+for the Dijkstra priority queue.
+
+### Separation of Concerns
+
+```text
+backend/
+    Algorithm & simulation logic
+
+api/
+    REST API & Flask routing
+
+frontend/
+    UI & visualization
+
+data/
+    Network configuration
+```
+
+### Dynamic Calculation
+
+Simulation metrics are calculated dynamically from the network rather than being hard-coded.
+
+This includes:
+
+* Affected node count
+* Shortage
+* Recovered supply
+* Alternative routes
+* Route costs
+* Delays
+* Network health
+* Dijkstra executions
+* Candidate routes
+* Min-Heap operations
+
+---
+
+# 🎯 15. Why GridGuard?
+
+Traditional graph algorithm demonstrations often show a shortest-path problem in isolation.
+
+GridGuard puts those algorithms into a practical infrastructure-resilience scenario.
+
+Instead of simply asking:
+
+> **"What is the shortest path?"**
+
+GridGuard asks:
+
+> **"What happens when part of an energy network fails, how much supply is lost, and what is the best feasible way to recover it?"**
+
+This connects fundamental Computer Science concepts with a real-world infrastructure problem.
+
+---
+
+# 🔮 16. Future Improvements
+
+Potential future extensions include:
+
+* Larger dynamically generated networks
+* Real-world energy grid datasets
+* Multiple simultaneous node failures
+* Advanced flow optimization
+* Max-Flow / Min-Cut analysis
+* Real-time energy demand changes
+* Weather-driven disruption scenarios
+* Historical disruption replay
+* User-created network configurations
+* Real-time monitoring dashboards
+* More advanced resilience scoring
+
+---
+
+# 📜 17. License
+
+MIT License.
+
+Created for college and hackathon demonstrations.
+
+---
+
+## 👨‍💻 Project
+
+**GridGuard — Energy Network Resilience & Disruption Simulator**
+
+**Repository:**
+https://github.com/ryanphilips7710/GridGuard
+
+**Live Demo:**
+https://gridguard-livid.vercel.app/
+
+**Core Technologies:**
+Python • Flask • JavaScript • Cytoscape.js • BFS • Dijkstra • Min-Heap • Vercel
