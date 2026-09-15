@@ -160,13 +160,13 @@ The resulting alternatives are ranked and presented to the user.
 
 # 🧠 4. Core Algorithms
 
-| Algorithm               | Implementation                               | Purpose                                 | Time Complexity          | Space Complexity |
+| Algorithm               | Purpose                                 | Time Complexity          | Space Complexity |
 | ----------------------- | -------------------------------------------- | --------------------------------------- | ------------------------ | ---------------- |
-| **BFS**                 | [`backend/bfs.py`](backend/bfs.py)           | Disruption propagation and reachability | `O(V + E)`               | `O(V)`           |
-| **Dijkstra**            | [`backend/dijkstra.py`](backend/dijkstra.py) | Minimum-cost alternative routing        | `O((V + E) log V)`       | `O(V)`           |
-| **Binary Min-Heap**     | [`backend/heap.py`](backend/heap.py)         | Priority queue for Dijkstra             | `O(log N)` per operation | `O(N)`           |
-| **Bottleneck Capacity** | [`backend/shortage.py`](backend/shortage.py) | Determines route capacity               | `O(L)`                   | `O(1)`           |
-| **Route Ranking**       | [`backend/ranking.py`](backend/ranking.py)   | Ranks candidate recovery routes         | `O(K log K)`             | `O(K)`           |
+| **BFS**                 | Disruption propagation and reachability | `O(V + E)`               | `O(V)`           |
+| **Dijkstra**            | Minimum-cost alternative routing        | `O((V + E) log V)`       | `O(V)`           |
+| **Binary Min-Heap**     | Priority queue for Dijkstra             | `O(log N)` per operation | `O(N)`           |
+| **Bottleneck Capacity** | Determines route capacity               | `O(L)`                   | `O(1)`           |
+| **Route Ranking**       | Ranks candidate recovery routes         | `O(K log K)`             | `O(K)`           |
 
 Where:
 
@@ -298,7 +298,7 @@ http://localhost:5000
 
 ---
 
-# 📡 10. REST API
+# 📡 8. REST API
 
 ## `GET /api/network`
 
@@ -383,216 +383,7 @@ Returns predefined demonstration scenarios.
 
 ---
 
-# 📊 11. Example Simulation Output
-
-A disruption can produce an analysis such as:
-
-```text
-NETWORK HEALTH
-94%
-
-TOTAL DEMAND
-250 MW
-
-AVAILABLE SUPPLY
-235 MW
-
-TOTAL SHORTAGE
-15 MW
-
-ADDITIONAL COST
-₹23
-
-ADDITIONAL DELAY
-+2.0 hrs
-
-AFFECTED NODES
-12
-
-AFFECTED DESTINATIONS
-4
-```
-
-For an affected destination:
-
-```text
-Destination: Metro City
-
-Demand:
-80 MW
-
-Recovered Supply:
-65 MW
-
-Remaining Shortage:
-15 MW
-
-Coverage:
-81.2%
-
-Best Alternative:
-P2 → S2 → D1 → C1
-
-Route Capacity:
-65 MW
-
-Additional Cost:
-₹5
-
-Additional Delay:
-+1 hour
-```
-
----
-
-# 🧪 12. Testing
-
-GridGuard includes an automated test suite covering algorithmic and integration behavior.
-
-Tests include:
-
-* BFS disruption propagation
-* Network reachability
-* Dijkstra minimum-cost routing
-* Path reconstruction
-* Min-Heap operations
-* Capacity constraints
-* Shortage calculation
-* Alternative supplier selection
-* Route ranking
-* Simulation behavior
-* Reset functionality
-* API behavior
-* Edge cases
-
-Run:
-
-```bash
-python test_simulation.py
-```
-
----
-
-# 🌐 13. Deployment
-
-GridGuard is structured for deployment on **Vercel**.
-
-The Flask application is exposed through:
-
-```text
-api/index.py
-```
-
-and the Vercel configuration is defined in:
-
-```text
-vercel.json
-```
-
-## Deploy Using GitHub
-
-1. Push the repository to GitHub.
-2. Open Vercel.
-3. Import the GridGuard repository.
-4. Select the project root as the root directory.
-5. Deploy.
-
-## Deploy Using Vercel CLI
-
-```bash
-npm install -g vercel
-```
-
-Then:
-
-```bash
-vercel
-```
-
-The Vercel configuration routes requests through the Flask application.
-
-### Production URL
-
-**https://gridguard-livid.vercel.app/**
-
----
-
-# 🛡️ 14. Design & Code Quality
-
-### No Black-Box Graph Algorithms
-
-The core graph algorithms are implemented explicitly in Python.
-
-GridGuard does not rely on NetworkX or another graph library to perform BFS or Dijkstra.
-
-The implementation uses:
-
-```python
-from collections import deque
-```
-
-for BFS and:
-
-```python
-import heapq
-```
-
-for the Dijkstra priority queue.
-
-### Separation of Concerns
-
-```text
-backend/
-    Algorithm & simulation logic
-
-api/
-    REST API & Flask routing
-
-frontend/
-    UI & visualization
-
-data/
-    Network configuration
-```
-
-### Dynamic Calculation
-
-Simulation metrics are calculated dynamically from the network rather than being hard-coded.
-
-This includes:
-
-* Affected node count
-* Shortage
-* Recovered supply
-* Alternative routes
-* Route costs
-* Delays
-* Network health
-* Dijkstra executions
-* Candidate routes
-* Min-Heap operations
-
----
-
-# 🎯 15. Why GridGuard?
-
-Traditional graph algorithm demonstrations often show a shortest-path problem in isolation.
-
-GridGuard puts those algorithms into a practical infrastructure-resilience scenario.
-
-Instead of simply asking:
-
-> **"What is the shortest path?"**
-
-GridGuard asks:
-
-> **"What happens when part of an energy network fails, how much supply is lost, and what is the best feasible way to recover it?"**
-
-This connects fundamental Computer Science concepts with a real-world infrastructure problem.
-
----
-
-# 🔮 16. Future Improvements
+# 🔮 9. Future Improvements
 
 Potential future extensions include:
 
@@ -610,23 +401,4 @@ Potential future extensions include:
 
 ---
 
-# 📜 17. License
-
-MIT License.
-
-Created for college and hackathon demonstrations.
-
----
-
-## 👨‍💻 Project
-
-**GridGuard — Energy Network Resilience & Disruption Simulator**
-
-**Repository:**
-https://github.com/ryanphilips7710/GridGuard
-
-**Live Demo:**
-https://gridguard-livid.vercel.app/
-
-**Core Technologies:**
 Python • Flask • JavaScript • Cytoscape.js • BFS • Dijkstra • Min-Heap • Vercel
